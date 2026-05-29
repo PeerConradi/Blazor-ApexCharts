@@ -3638,6 +3638,16 @@ namespace ApexCharts
         /// <inheritdoc cref="ApexCharts.RadialBarDataLabels" />
         public RadialBarDataLabels DataLabels { get; set; }
 
+        /// <summary>
+        /// Threshold bands drawn as colored arc segments behind the value-arc and tick marks
+        /// (e.g. red/amber/green zones on a gauge). Set to <c>null</c> or empty to disable.
+        /// Style segment width and spacing via <see cref="BandsStyle"/>.
+        /// </summary>
+        public List<RadialBarBand> Bands { get; set; }
+
+        /// <inheritdoc cref="ApexCharts.RadialBarBandsStyle" />
+        public RadialBarBandsStyle BandsStyle { get; set; }
+
         /// <inheritdoc cref="ApexCharts.RadialBarBarLabels" />
         public RadialBarBarLabels BarLabels { get; set; }
 
@@ -3654,6 +3664,9 @@ namespace ApexCharts
         /// </summary>
         public bool? InverseOrder { get; set; }
 
+        /// <inheritdoc cref="ApexCharts.RadialBarNeedle" />
+        public RadialBarNeedle Needle { get; set; }
+
         /// <summary>
         /// Sets the left offset for radialBars
         /// </summary>
@@ -3665,12 +3678,156 @@ namespace ApexCharts
         public double? OffsetY { get; set; }
 
         /// <summary>
+        /// Gauge sub-shape. <see cref="RadialBarShape.Arc"/> (default) renders the existing filled
+        /// value-arc gauge. <see cref="RadialBarShape.Needle"/> replaces the value-arc with a rotating
+        /// pointer/needle. Configure the needle appearance via <see cref="Needle"/>.
+        /// </summary>
+        public RadialBarShape? Shape { get; set; }
+
+        /// <summary>
         /// Angle from which the radialBars should start
         /// </summary>
         public double? StartAngle { get; set; }
 
         /// <inheritdoc cref="ApexCharts.Track" />
         public Track Track { get; set; }
+    }
+
+    /// <summary>
+    /// Defines how to style the needle/pointer when <see cref="PlotOptionsRadialBar.Shape"/> is set to <see cref="RadialBarShape.Needle"/>.
+    /// </summary>
+    public class RadialBarNeedle
+    {
+        /// <summary>
+        /// Fill color of the needle.
+        /// </summary>
+        public string Color { get; set; }
+
+        /// <summary>
+        /// Length of the needle. Accepts a percentage string relative to the gauge radius (e.g. "85%") or an absolute pixel value.
+        /// </summary>
+        public string Length { get; set; }
+
+        /// <summary>
+        /// Pixel width of the needle at its base.
+        /// </summary>
+        public double? BaseWidth { get; set; }
+
+        /// <summary>
+        /// Pixel width of the needle at its tip. Typically lower than <see cref="BaseWidth"/> for a tapered pointer.
+        /// </summary>
+        public double? TipWidth { get; set; }
+
+        /// <summary>
+        /// Pixel offset on the Y axis from the geometric arc center. Positive values push the needle base down
+        /// (toward the chord midpoint of a semicircular gauge); negative values push it up. The needle rotates
+        /// around this shifted point.
+        /// </summary>
+        public double? OffsetY { get; set; }
+
+        /// <summary>
+        /// When true, also renders the filled value-arc alongside the needle. Defaults to false (needle-only).
+        /// </summary>
+        public bool? ShowValueArc { get; set; }
+
+        /// <inheritdoc cref="ApexCharts.RadialBarNeedleAnimation" />
+        public RadialBarNeedleAnimation Animation { get; set; }
+    }
+
+    /// <summary>
+    /// Defines animation behavior for the radial bar needle.
+    /// </summary>
+    public class RadialBarNeedleAnimation
+    {
+        /// <summary>
+        /// Whether the needle should animate when its value changes.
+        /// </summary>
+        public bool? Enabled { get; set; }
+
+        /// <summary>
+        /// Animation duration in milliseconds.
+        /// </summary>
+        public double? Duration { get; set; }
+
+        /// <summary>
+        /// CSS-style easing function. Common values: "ease-out", "ease-in", "ease-in-out", "linear".
+        /// </summary>
+        public string Easing { get; set; }
+    }
+
+    /// <summary>
+    /// A single colored arc segment rendered along the gauge backdrop.
+    /// </summary>
+    public class RadialBarBand
+    {
+        /// <summary>
+        /// Start of the band in the gauge's value domain (defaults to 0..100).
+        /// </summary>
+        public double? From { get; set; }
+
+        /// <summary>
+        /// End of the band in the gauge's value domain (defaults to 0..100).
+        /// </summary>
+        public double? To { get; set; }
+
+        /// <summary>
+        /// Stroke color of the band. Defaults to <c>#ccc</c> if omitted.
+        /// </summary>
+        public string Color { get; set; }
+    }
+
+    /// <summary>
+    /// Styling shared across all entries in <see cref="PlotOptionsRadialBar.Bands"/>.
+    /// <para>
+    /// Two common visual modes:
+    /// </para>
+    /// <list type="bullet">
+    ///   <item>
+    ///     <description>
+    ///       <b>Continuous gradient sweep</b> — set <see cref="Gap"/> to <c>0</c> and
+    ///       <see cref="LineCap"/> to <see cref="ApexCharts.LineCap.Butt"/> so adjacent bands
+    ///       join into a single arc. Use many bands with finely-stepped colors for a smooth
+    ///       gradient (e.g. green → cream → orange across ~10–15 bands).
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///       <b>Segmented zones</b> (tachometer / red-amber-green dial) — set <see cref="Gap"/>
+    ///       to a positive value (e.g. <c>4</c>) and <see cref="LineCap"/> to
+    ///       <see cref="ApexCharts.LineCap.Round"/> so each band renders as a distinct rounded
+    ///       pill. Use a small number of wide, contrasting bands (e.g. 3–7 entries).
+    ///     </description>
+    ///   </item>
+    /// </list>
+    /// </summary>
+    public class RadialBarBandsStyle
+    {
+        /// <summary>
+        /// Band stroke width as a percentage of the gauge arc radius (e.g. "40%") or an absolute pixel value.
+        /// Set slightly lower than the value-arc stroke so the value-arc reads on top by default.
+        /// </summary>
+        public string StrokeWidth { get; set; }
+
+        /// <summary>
+        /// Pixel gap between consecutive bands.
+        /// Set to <c>0</c> for a continuous arc (the bands butt up against each other and read as one line);
+        /// set to a positive value to render each band as a separate segment with visible spacing.
+        /// </summary>
+        public double? Gap { get; set; }
+
+        /// <summary>
+        /// When true, the default track is hidden if bands cover the full value range — the bands themselves
+        /// act as the visual backdrop.
+        /// </summary>
+        public bool? HideTrackWhenPresent { get; set; }
+
+        /// <summary>
+        /// Stroke end-cap style applied to each band segment.
+        /// Use <see cref="ApexCharts.LineCap.Butt"/> with <see cref="Gap"/> = 0 for a continuous gradient arc
+        /// where bands flow into one another. Use <see cref="ApexCharts.LineCap.Round"/> with a positive
+        /// <see cref="Gap"/> for a segmented look where each band is a distinct rounded pill.
+        /// </summary>
+        public LineCap? LineCap { get; set; }
     }
 
 
@@ -5623,6 +5780,22 @@ namespace ApexCharts
         Diamond,
         Triangle,
 
+    };
+
+    /// <summary>
+    /// Gauge sub-shape used by <see cref="PlotOptionsRadialBar.Shape"/>.
+    /// </summary>
+    public enum RadialBarShape
+    {
+        /// <summary>
+        /// Default. Renders the filled value-arc gauge.
+        /// </summary>
+        Arc,
+
+        /// <summary>
+        /// Replaces the value-arc with a rotating pointer/needle.
+        /// </summary>
+        Needle
     };
 
 
