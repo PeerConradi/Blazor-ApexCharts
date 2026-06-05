@@ -2012,7 +2012,8 @@ namespace ApexCharts
         public GradientType Type { get; set; }
 
         /// <inheritdoc cref="ApexCharts.FillGradientStops"/>
-        public List<FillGradientStops> ColorStops { get; set; }
+        /// <inheritdoc cref="ApexCharts.ColorStopsCollection"/>
+        public ColorStopsCollection ColorStops { get; set; }
     }
 
     /// <summary>
