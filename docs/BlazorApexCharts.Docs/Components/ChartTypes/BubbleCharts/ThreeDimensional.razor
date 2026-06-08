@@ -1,6 +1,7 @@
 ﻿<DemoContainer>
     <ApexChart TItem="SupportIncident"
-               Title="Support Incidents">
+               Title="Support Incidents"
+    Options="@chartOptions">
 
     @foreach (var data in incidents.GroupBy(e=> e.Source))
    {
@@ -9,23 +10,24 @@
                     Name="@data.Key.ToString()"
                      XValue="@(e => e.WeekName)"
                     YAggregate="@(e => (decimal)e.Sum(e => e.LeadTime))"
-                    ZAggregate="@(e => (int)e.Average(e => e.Severity))"
-                    PointColor = "e=> GetPointColor(e) "/>
+                    ZAggregate="@(e => (int)e.Average(e => e.Severity))" />
    }
     </ApexChart>
 </DemoContainer>
 
 @code 
 {
-    private List<SupportIncident> incidents { get; set; } = SampleData.GetSupportIncidents(); 
+    private List<SupportIncident> incidents { get; set; } = SampleData.GetSupportIncidents();
 
-    private string GetPointColor(SupportIncident incident)
+    private ApexChartOptions<SupportIncident> chartOptions = new()
     {
-        if (incident.Severity > 70)
+        Fill = new()
         {
-            return "#ba4e8e";
+            Type = FillType.Gradient
+        },
+        Theme = new()
+        {
+            Palette = PaletteType.Palette2
         }
-        return null;
-    }
-
+    };
 }

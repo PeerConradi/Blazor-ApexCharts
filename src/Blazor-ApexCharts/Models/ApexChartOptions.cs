@@ -2453,7 +2453,7 @@ namespace ApexCharts
         /// <summary>
         /// Stroke Size of the marker point.
         /// </summary>
-        public double? StrokeWidth { get; set; }
+        public Size? StrokeWidth { get; set; }
 
         /// <summary>
         /// Width of the marker that appears before series name.
@@ -2751,6 +2751,9 @@ namespace ApexCharts
         /// <inheritdoc cref="ApexCharts.PlotOptionsBoxPlot" />
         public PlotOptionsBoxPlot BoxPlot { get; set; }
 
+        /// <inheritdoc cref="ApexCharts.PlotOptionsFunnel" />
+        public PlotOptionsFunnel Funnel { get; set; }
+
         /// <inheritdoc cref="ApexCharts.PlotOptionsHeatmap" />
         public PlotOptionsHeatmap Heatmap { get; set; }
 
@@ -2952,6 +2955,43 @@ namespace ApexCharts
 
         /// <inheritdoc cref="ApexCharts.PlotOptionsBarDataLabels" />
         public PlotOptionsBarDataLabels DataLabels { get; set; }
+    }
+
+    public enum FunnelShapes
+    {
+        /// <summary>
+        /// preserves the existing centered-rectangle funnel geometry. Each stage is rendered as an independent rectangle.
+        /// </summary>
+        Rectangle,
+        /// <summary>
+        ///  produces continuous sloped sides between consecutive stages: each stage's bottom width matches the next stage's top width, giving the funnel a smooth poured-glass look.
+        /// </summary>
+        Trapezoid
+    }
+
+    public enum FunnelLastShape
+    {
+        /// <summary>
+        /// the last stage keeps parallel sides and a flat bottom.
+        /// </summary>
+        Flat,
+        /// <summary>
+        /// the last stage tapers to a point, producing a classic funnel/pyramid silhouette.
+        /// </summary>
+        Taper
+    }
+
+    public class PlotOptionsFunnel
+    {
+        /// <summary>
+        /// Controls how consecutive funnel stages are connected.
+        /// </summary>
+        public FunnelShapes Shape { get; set; } = FunnelShapes.Rectangle;
+
+        /// <summary>
+        /// Only used when shape: 'trapezoid'. Controls how the bottom edge of the final stage is drawn.
+        /// </summary>
+        public FunnelLastShape LastShape { get; set; } = FunnelLastShape.Flat;
     }
 
     /// <summary>
@@ -5506,7 +5546,9 @@ namespace ApexCharts
         Scatter,
         Treemap,
         BoxPlot,
-        RangeArea
+        RangeArea,
+        Funnel,
+        Pyramid
     };
 
     /// <summary>
