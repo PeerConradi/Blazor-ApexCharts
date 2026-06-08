@@ -2935,7 +2935,7 @@ namespace ApexCharts
         /// <summary>
         /// When dumbbell chart is enabled, use this option to set custom colors for the dots at the starting and ending shape.
         /// </summary>
-        public List<string> DumbbellColors { get; set; }
+        public List<List<string>> DumbbellColors { get; set; }
 
         /// <summary>
         /// Is chart funnel
